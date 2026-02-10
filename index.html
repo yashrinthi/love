@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body {
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: linear-gradient(135deg,#ff758c,#ff7eb3);
+    font-family: Arial, sans-serif;
+    overflow:hidden;
+  }
+  .card {
+    background:white;
+    padding:30px;
+    border-radius:25px;
+    text-align:center;
+    width:350px;
+    position:relative;
+  }
+  h1 { color:#e63946; font-size:22px; margin-bottom:30px; }
+  .buttons-container {
+    position:relative;
+    height:70px; 
+    margin-bottom:20px; 
+  }
+  button {
+    padding:12px 25px;
+    font-size:16px;
+    border:none;
+    border-radius:30px;
+    position:absolute;
+    transition: all 0.2s ease;
+  }
+  #yes { background:#e63946; color:white; cursor:pointer; left:0; top:0; }
+  #no { background:#ccc; cursor:pointer; left:150px; top:0; }
+  #msg { display:none; font-size:20px; font-weight:bold; color:#e63946; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Will you be my Valentine? Pradeesh 💖</h1>
+  
+  <div class="buttons-container">
+    <button id="yes" onclick="playSong()">Yes 💕</button>
+    <button id="no">No</button>
+  </div>
+  
+  <div  id="msg">💖 Happy Valentine’s Day 💖</div>
+</div>
+
+
+</body>
+
+<audio id="music" preload="auto">
+  <source src="song.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+const yesBtn = document.getElementById('yes');
+const noBtn = document.getElementById('no');
+const music = document.getElementById('music');
+const msg = document.getElementById('msg');
+
+// Play song and show message
+function playSong() {
+  msg.style.display = 'block';
+  music.play().catch(err => console.error(err));
+}
+
+// Move "No" button away when mouse approaches
+document.addEventListener('mousemove', e => {
+  const rect = noBtn.getBoundingClientRect();
+  const mouseX = e.clientX;
+  const mouseY = e.clientY;
+  
+  const buffer = 50; // how close before it moves
+  if (
+    mouseX > rect.left - buffer &&
+    mouseX < rect.right + buffer &&
+    mouseY > rect.top - buffer &&
+    mouseY < rect.bottom + buffer
+  ) {
+    // Move to random position inside the buttons container
+    const parentRect = noBtn.parentElement.getBoundingClientRect();
+    const containerWidth = parentRect.width;
+    const containerHeight = parentRect.height;
+
+    let newLeft = Math.random() * (containerWidth - noBtn.offsetWidth);
+    let newTop = Math.random() * (containerHeight - noBtn.offsetHeight);
+
+    // Prevent overlapping yes button
+    const yesRect = yesBtn.getBoundingClientRect();
+    if (
+      newLeft + noBtn.offsetWidth > yesRect.left - parentRect.left &&
+      newLeft < yesRect.right - parentRect.left &&
+      newTop + noBtn.offsetHeight > yesRect.top - parentRect.top &&
+      newTop < yesRect.bottom - parentRect.top
+    ) {
+      newTop = yesRect.bottom - parentRect.top + 5;
+    }
+
+    noBtn.style.left = newLeft + 'px';
+    noBtn.style.top = newTop + 'px';
+  }
+});
+</script>
+
+</body>
+</html>
